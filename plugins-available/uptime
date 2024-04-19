@@ -1,0 +1,31 @@
+#!/bin/bash
+# Show the uptime of your computer
+#Written By Mathieu CONAN
+
+UptimeConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+
+while true
+do 
+echo "$SET_MSG_UPTIME"
+read ServerUptime
+	case "$ServerUptime" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/uptime" "$PLUGINS_PATH_ENABLED/uptime"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*uptime*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowUptime(){
+echo -e "____/ $MAIN_MSG_UPTIME \________________________________________\n" 
+echo -e "`hostname` : `uptime `\n"
+}
+
+
+if [[ "$1" -eq "-c" && "$2" -eq "--uptime" ]];then 
+UptimeConfig
+else
+ShowUptime
+fi

@@ -1,0 +1,30 @@
+#!/bin/bash
+#Show Sockets listening on port and associated process. It can help to detect intrusions.
+#Written By Mathieu CONAN
+
+NetstatConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_NETSTAT"
+read Netstat
+	case "$Netstat" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/netstat" "$PLUGINS_PATH_ENABLED/netstat"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*netstat*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowNetstat(){
+echo -e "\n____/ $MAIN_MSG_NETSTAT \________________________________________\n"
+echo -e "`netstat -pltu`\n"
+}
+
+
+if [[ "$1" = "-c" && "$2" = "--netstat" ]];then 
+NetstatConfig
+else
+ShowNetstat
+fi

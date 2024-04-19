@@ -1,0 +1,75 @@
+#!/bin/bash
+#Show log for ssh activity on your system
+#Written By Mathieu CONAN
+
+SshConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_SSH_REPORT"
+read Ssh
+	case "$Ssh" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/ssh" "$PLUGINS_PATH_ENABLED/ssh"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*ssh*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+echo -e "___/ $MAIN_MSG_SSH_REPORT \________________________________________\n"
+
+ShowSshReportFailed(){
+echo -e "_____/ $MAIN_MSG_SSH_FAILED \________________________________________\n"
+    #FunctionDateConvert is defined in functions.main. It determine $Now and $StartTimestamp values.
+    FunctionDateConvert
+    #Manage the dreport options (for example : dreport -H 24 => convert 24 hours in timestamp.
+    FunctionTimeFormat $1 $2
+    #tant que le timestamp de depart est inferieur a l'heure actuelle, on cherche les occurence dans /var/log/auth.log
+    while [[  $StartTimestamp -le $Now ]]
+    do
+      #on reformate le timestamp pour que ça corresponde a la bonne chaine dans le /var/log/auth.log. On rajoute 3600 seconde pour etre a l'heure locale
+      TimeFormat=`date --date "1970-01-01 $(($StartTimestamp+3600))sec" +"$Month %d %H:%M"`
+      sshFailed=`cat /var/log/auth.log | grep "sshd" | grep "Failed" | grep "$TimeFormat"`
+      #if [ -n "$sshFailed" ];then echo "$sshFailed";fi
+      #la recherche se fait par saut de minute (60 seconde).
+      StartTimestamp=$(($StartTimestamp+60))
+    done
+if [[ -n "$sshFailed" ]];then echo -e "$MAIN_MSG_SSH_FAILED_FALSE\n";fi
+}
+ShowSshReportInvalid(){
+echo -e "_____/  $MAIN_MSG_SSH_INVALID  \________________________________________\n"
+    FunctionDateConvert
+    FunctionTimeFormat $1 $2
+
+    while [[  $StartTimestamp -le $Now ]]
+    do
+      TimeFormat=`date --date "1970-01-01 $(($StartTimestamp+3600)) sec" +"$Month %d %H:%M"`
+      sshInvalid=`cat /var/log/auth.log | grep "sshd" | grep "Invalid" | grep "$TimeFormat"`
+        if [ -n "$sshInvalid" ];then echo "$sshInvalid";fi
+      StartTimestamp=$(($StartTimestamp+60))
+    done
+if [[ -n "$sshInvalid" ]];then echo -e "$MAIN_MSG_SSH_INVALID_FALSE\n";fi
+}
+ShowSshReportAccepted(){
+echo -e "______/ $MAIN_MSG_SSH_ACCEPTED \________________________________________\n"
+    FunctionDateConvert
+    FunctionTimeFormat $1 $2
+
+    while [[  $StartTimestamp -le $Now ]]
+    do
+      TimeFormat=`date --date "1970-01-01 $(($StartTimestamp+3600))sec" +"$Month %d %H:%M"`
+      sshAccepted=`cat /var/log/auth.log | grep "sshd" | grep "Accepted" | grep "$TimeFormat"`
+        if [ -n "$sshAccepted" ];then echo "$sshAccepted";fi
+      StartTimestamp=$(($StartTimestamp+60))
+    done
+if [[ -n "$sshAccepted" ]];then echo -e "$MAIN_MSG_SSH_ACCEPTED_FALSE\n";fi
+}
+
+if [[ "$1" -eq  "-c" && "$2" -eq "--ssh" ]];then
+SshConfig
+else
+ShowSshReportFailed $1 $2
+ShowSshReportInvalid $1 $2
+ShowSshReportAccepted $1 $2
+fi

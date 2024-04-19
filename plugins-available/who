@@ -1,0 +1,32 @@
+#!/bin/bash
+#Show the connected users on your system using the who command line utility
+#Written By Mathieu CONAN
+
+
+WhoConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+
+while true
+do 
+echo "$SET_MSG_WHO"
+read Who
+	case "$Who" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/who" "$PLUGINS_PATH_ENABLED/who"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*who*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowWho(){
+echo -e "_/ $MAIN_MSG_WHO `date +%T` \________________________________________\n"
+echo -e "`who -Tu`\n"
+}
+
+
+if [[ "$1" -eq "-c" && "$2" -eq "--who" ]];then 
+WhoConfig
+else
+ShowWho
+fi

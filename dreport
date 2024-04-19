@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#***************************************************************#
+#  Title : dreport (for Daily Report)				#
+#  Date : 28-01-008						#
+#  Author : Mathieu CONAN ( mathieuconan (at) gmail (dot) com )	#
+#  version : Alpha 0.8						#
+#								#
+#  Description : The script perform an analyse of some		#
+#                stuff on your system. It MUST be start		#
+#                as root user, and postfix/bsd-mailx MUST	#
+#                be installed.See README for help and details	#
+#								#
+#  Licence : Under GPL V2, see LICENCE file for more details	#
+#								#
+#***************************************************************#
+
+source "error" #gestion des erreurs.
+report_name=`echo $CurrentDate-$OPT_REPORT_FILE_NAME`
+
+echo -e '\t\t\t | '$MAIN_MSG_TITLE `hostname` '|\n\n' > $REPORTS_PATH/$report_name
+
+#boucle d'execution des plugins
+for file in `ls -1 $PLUGINS_PATH_ENABLED/*`; do
+  source $file >> $REPORTS_PATH/$report_name
+done
+
+source plugins-available/SendByMail

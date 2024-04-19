@@ -1,0 +1,30 @@
+#!/bin/bash
+#Show network interfaces configuration
+#Written By Mathieu CONAN
+
+IfConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_IF_CONFIG"
+read IfConfig
+	case "$IfConfig" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/ifconfig" "$PLUGINS_PATH_ENABLED/ifconfig"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*ifconfig*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowIfConfig(){
+echo -e "____/ $MAIN_MSG_IF_CONFIG \________________________________________\n"
+echo -e "`ifconfig -a`\n"
+}
+
+
+if [[ "$1" = "-c" && "$2" = "--ifconfig" ]];then 
+IfConfig
+else
+ShowIfConfig
+fi

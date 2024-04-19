@@ -1,0 +1,29 @@
+#!/bin/bash
+#Show Hard Drive usage.
+#Written By Mathieu CONAN
+
+DiskConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_DISK_USAGE"
+read DiskUsage
+	case "$DiskUsage" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/diskUsage" "$PLUGINS_PATH_ENABLED/diskUsage"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*diskUsage*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowDiskUsage(){
+echo -e "____/ $MAIN_MSG_DISK_USAGE \________________________________________\n"
+echo -e "`df -h`\n"
+}
+
+if [[ "$1" -eq "-c" && "$2" -eq "--diskUsage" ]];then 
+DiskConfig
+else
+ShowDiskUsage
+fi

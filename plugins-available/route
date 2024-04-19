@@ -1,0 +1,31 @@
+#!/bin/bash
+#Use the route command to show gateways
+#Written By Mathieu CONAN
+
+RouteConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_ROUTE"
+read Route
+	case "$Route" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/route" "$PLUGINS_PATH_ENABLED/route"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*route*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowRoute(){
+echo -e "____/ $MAIN_MSG_ROUTE \________________________________________\n"
+echo -e "`route -n`\n"
+}
+
+
+
+if [[ "$1" = "-c" && "$2" = "--route" ]];then 
+RouteConfig
+else
+ShowRoute
+fi

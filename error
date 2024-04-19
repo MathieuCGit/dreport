@@ -1,0 +1,126 @@
+#!/bin/bash
+#This file manage errors from the script. It's called first in dreport file.
+#Written by Mathieu CONAN
+
+#_/ Verification of shell name and version \_________________________
+bash_version=`bash --version`
+
+NeededVersion=$(echo $bash_version | cut -b 19)
+CurrentVersion=$(echo $bash_version | cut -b 19-24)
+
+if [[ $NeededVersion -lt 3 ]]; then
+  echo "WARNING !! You seem to use other than bash shell or a version older than 3.0. Some functionality could not run. Try and pray :p"
+else
+  echo "your bash version is $CurrentVersion everything is ok."
+fi
+
+#_/ Verification of root authorization for scripts execution \________
+
+# Verify root privileges
+if [[ "$UID" -ne "$UID_ROOT" ]]
+then
+  echo "You need to be root to run this script"
+  exit
+fi
+
+
+#_/ Verification of program files and folders.\_____
+
+if [[ -e "conf.main" && -e "functions.main" ]]; then
+  source "conf.main"
+  source "functions.main"
+  error="false"
+else
+  echo "Configuration files don't seem to exist (see README for details) !"
+  exit
+fi
+
+#_/ Verification of language settings \_________________________
+
+if [[  -e "$LANG_PATH" && -d "$LANG_PATH" ]]; then
+  echo "language directory exists."
+  error="false"
+else
+  echo "language directory doesn't exists."
+  exit
+fi
+
+LANGUAGE=`env | grep $LANG | cut -c6-7` #Select language using system env variables :)
+if [ -e "lang/language_$LANGUAGE" ];then
+	source "lang/language_$LANGUAGE"
+	echo -e "$SYSTEM_ENV_MSG_LANGUAGE"
+else
+	source "lang/language_en"
+	echo -e "\n\tYour language doesn't seem to be supported, so english is define by default."
+	echo -e "If you want to participate this program, you can translate it for your country"
+	echo -e "inspire from the language_en file, and mail me the result ;) at : mathieuconan (at) gmail (dot) com\n"
+fi
+
+#_/ folder verification \__________________________
+if [[  -e "$REPORTS_PATH" && -d "$REPORTS_PATH" ]]; then
+  echo "Report directory exists"
+  error="false"
+else
+  echo "Report directory doesn't seems to exist"
+  exit
+fi
+
+if [[  -e "$PLUGINS_PATH_AVAILABLE" && -d "$PLUGINS_PATH_AVAILABLE" ]]; then
+  echo "plugins directory exists"
+  error="false"
+else
+  echo "plugins directory doesn't seems to exist."
+  exit
+fi
+
+if [[ `ls -l "$PLUGINS_PATH_AVAILABLE"` != "total 0" ]]; then
+  echo "plugins directory isn't empty"
+  error="false"
+else
+   echo "plugins directory is empty."
+   exit
+fi
+
+if [[  -r "$PLUGINS_PATH_AVAILABLE" ]]; then
+  echo "directory is readable"
+  error="false"
+else
+  echo "You don't seem to have readable permission for this directory"
+  exit
+fi
+
+if [[  -w "$PLUGINS_PATH_AVAILABLE" ]]; then
+  echo "directory is writable"
+  error="false"
+else
+  echo "You don't seem to have writable permission for this directory"
+  exit
+fi
+
+if [[  -x "$PLUGINS_PATH_AVAILABLE" ]]; then
+  echo "directory is executable"
+  error="false"
+else
+  echo "You don't seem to have executable permission for this directory"
+  exit
+fi
+
+
+#_/ Verification of command line options, otherwise, print help. \________________
+
+case "$1" in
+    "")echo -e "\tNo argument passed, please try dreport -h\n"; exit;;
+    -a)if [[ `ls -l "$PLUGINS_PATH_ENABLED"` != "total 0" ]]; then
+			echo -e "\n\tEnabled plugins list : \n";
+			ls -1 $PLUGINS_PATH_ENABLED;
+		else 
+			echo -e "\n\t No plugins enabled, program exit. \n"; exit;
+		fi;;
+    -h)source "help";exit;;
+    -c)source "settings";exit;;
+    -s)error="false";;
+    -m)error="false";;
+    -H)error="false";;
+    -d)error="false";;
+    *)echo -e "\t Invalid Option, please try dreport -h\n";exit;;
+esac

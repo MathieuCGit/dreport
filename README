@@ -1,0 +1,127 @@
+#***************************************************************#
+#  Title : dreport (for Daily Report)	  			#
+#  Date : 28-01-2008						#
+#  Author : Mathieu CONAN (mathieuconan (at) gmail (dot) com )	#
+#  version : Alpha 1.2						#
+#								#
+#  Description : The script performs an analyse of some		#
+#                stuff on your system. It MUST be start		#
+#                as root user, and postfix/bsd-mailx MUST 	#
+#                be installed.					#
+#								#
+#  Licence : Under GPL V2, see LICENCE file for more details	#
+#								#
+#***************************************************************#
+
+#_/ MAINS FILES \_________________
+
+dreport		=> main script
+error 		=> manage error in the program
+conf.main 	=> main variables for the program. Could be change, but carrefully !
+functions.main 	=> main functions for the program
+help 		=> manage help instruction from the dreport -h command line.
+
+#_/ LANGAGE FILES \___________________
+
+
+If you want to participate this program, you can translate it for your country 
+inspire from the lang/language_en file, and mail me the result ;) at : mathieuconan (at) gmail (dot) com
+Actually supported :
+
+language_en => EN,english
+language_fr => FR,french
+
+#_/ ENABLE/DISABLE PLUGIN \____________________
+#_____/ Enable a plugin \______________________
+To use a specific plugin, you just need to make a symbolic link from plugins-available to plugins-enabled (apache2-like !!)
+	example : I need to watch my server uptime in my activity report, I just type in command line :
+
+	ln -s /directory-where-is-dreport/plugins-available/uptime /directory-where-is-dreport/plugins-enabled/
+
+	in addition, you can specify every name you want, for example, still for the uptime :
+
+	ln -s /directory-where-is-dreport/plugins-available/uptime /directory-where-is-dreport/plugins-enabled/01-uptime
+
+#_____/ Disable a plugin \____________________
+To disable a plugin you just need to remove the symbolic link in the /directory-where-is-dreport/plugins-enabled/ with th rm POSIX command.
+
+#_____/ Existing plugins (sorted alphabeticaly) \_______________
+
+	apt-get		=> Manage debian apt-get packages manager
+	disk-usage	=> Show hard drives's usage.(df -h).
+	ifconfig	=> Show the config of your network cards (ifconfig -a).
+	iptables	=> Show the iptables config of your system (iptables -L).
+	lsmod		=> Show you kernel modules loaded in memory. (lsmod)
+	mem-usage	=> Show memory usage (RAM and swap).(free -mtl).
+	netstat		=> Show Sockets listening on port and associated process. It can help to detect intrusions.(netstat -pltu).
+	psinfo		=> Show process currently running on the system in the rapport.(ps -ef)
+	pstree		=> Show a tree of process currently running on your system.(pstree -p)
+	resolv		=> Show the DNS config of your system (cat /etc/resolv.conf).
+	route		=> Show the NAT config of your system (route -n).
+	ssh		=> Show ssh log for Accepted, failed and Invalid entries in /var/log/auth.log
+	uptime		=> Show your system uptime in the rapport. (uptime)
+	who		=> Show which user(s) is(are) connected to the system.(who -a)
+
+
+#_/ HOW TO MAKE A PLUGIN \______________________________________________
+
+	Plugins must be put in plugins-available/ directory. Run ./install script after having written your plugin and put it into
+	plugins-available/ directory.
+
+	First of all, you need to understand that a plugin is made in three parts :
+
+	1 - A setting function, to configure the plugins. This section simply make a symbolic link 
+	between plugins-available/your-plugin and plugins-enabled/your-plugin
+
+	2 - A plugin function. In this function, you write what you want your plugin do ! It could be everything bash can do !
+
+	3 - A conditional structure to determine if program must read setting function or main plugin fonction.
+
+
+	FOR EXAMPLE :
+
+	--------------------------------------------------------------------------------------------------------------------------------
+#!/bin/bash
+#Describe your plugin action
+#Written by you ;)
+
+	PluginConfig()
+	{
+	absolute_path_to_plugins=`pwd`"/plugins-available"
+
+	while true
+		do 
+		echo "$SET_MSG_PLUGIN"
+			read PluginEntry
+			case "$PluginEntry" in
+				$SET_INPUT_YES ) `ln -s "$absolute_path_to_plugins/pluginName" "$PLUGINS_PATH_ENABLED/pluginName"`;break;;
+				$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*pluginName*`;break;;
+					     * )echo "$SET_MSG_ERROR";continue;;
+			esac
+		done
+		exit
+	}
+
+ShowPlugin(){
+echo -e "____/ $MAIN_MSG_PLUGIN \________________________________________\n" 
+#WRITE HERE YOUR PLUGIN MAIN FUNCTION.
+}
+
+if [[ "$1" = "-c" && "$2" = "--pluginName" ]];then 
+	PluginConfig
+else
+	ShowPlugin
+fi
+-------------------------------------------------------------------------------------------------------------------------------
+
+NEED SOME EXPLANATIONS ?? ;) SEE BELOW :
+
+PluginConfig	=> could be what you want, please to have a nice readable code, use "Config" in the name. 
+PluginEntry	=> could be what you want. this entry is used to make (if yes) the symlink between 
+		   plugins-available and plugins-enabled or to remove (if no) the symlink.
+pluginName	=> The name of your creation !! :p. It can really be what you want. But if you want to share it, 
+		   think an expressive name is easier to understand. BE CAREFULL : Please NOT use special char as "'/-_() etc...
+SET_MSG_PLUGIN	=> this entry MUST be reported in the lang/language_en ! 
+		   It is the message shown when you use -c --yourplugin.
+MAIN_MSG_PLUGIN	=> this entry MUST be reported in the lang/language_en ! It is the message shown in the report.
+

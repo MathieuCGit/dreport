@@ -1,0 +1,30 @@
+#!/bin/bash
+#Show Firewall configuration. Using kernel iptable firewall.
+#Written By Mathieu CONAN
+
+IptablesConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_IPTABLES"
+read iptables
+	case "$iptables" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/iptables" "$PLUGINS_PATH_ENABLED/iptables"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*iptables*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowIptables(){
+echo -e "____/ $MAIN_MSG_IPTABLES \________________________________________\n"
+echo -e "`iptables -L -n`\n"
+}
+
+
+if [[ "$1" -eq "-c" && "$2" -eq "--iptables" ]];then 
+IptablesConfig
+else
+ShowIptables
+fi

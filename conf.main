@@ -1,0 +1,27 @@
+#!/bin/bash
+#Here you can edit some options. If unsure, please don't edit this file !
+#Written by Mathieu CONAN
+
+#mail options. You can edit safely.
+OPT_MAIL_ADDRESSA=no-one
+OPT_MAIL_ADDRESSCC=no-one
+OPT_MAIL_ADDRESSBCC=daeavelwyn@gmail.com,mathieuconan@gmail.com
+OPT_MAIL_HEADER="From:System-`hostname`@DoNotReply"
+OPT_MAIL_SUBJECT="Rapport du `date` pour `hostname`"
+
+#Main options.
+UID_ROOT="0" #is used to manage privileges of dreport. For example, netstat need root privileges to print a detailed report.
+LANG_PATH="lang" # lang folder
+
+#BE REALLY CAREFULL TO NOT USE AN EXISTING FILE !!.
+OPT_REPORT_FILE_NAME="server-report" 
+REPORTS_PATH="reports"
+
+# path and name of main files
+MAIN_SCRIPT_NAME="dreport" #main script, can be linked in /usr/sbin or /sbin.
+PLUGINS_PATH_AVAILABLE="plugins-available"
+PLUGINS_PATH_ENABLED="plugins-enabled"
+
+#today's date.
+CurrentDate=`date +%Y-%m-%d`
+TimeZone=3600 #set here the difference between time UTC and your time zone in seconds

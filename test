@@ -1,0 +1,23 @@
+#!/bin/bash
+# syntaxe liste-fichier  nom-fichier
+# --> liste les fichiers comme la commande ls
+source conf.main
+source functions.main
+
+ShowApache2(){
+echo -e "____/ $MAIN_MSG_APACHE2 \________________________________________\n"
+    FunctionDateConvert #parametre le variable $Month
+    FunctionTimeFormat $1 $2 #parametre la variable $StartTimestamp et $Now
+    StartTimestamp=$(($StartTimestamp+$TimeZone))
+echo $StartTimestamp
+
+    while [[  $StartTimestamp -le $Now ]]
+    do
+       TimeFormat=`date --date "1970-01-01 $(($StartTimestamp))sec" +"$Month %d %H:%M"`
+       apache2Error=`cat /var/log/apache2/error.log | grep "$TimeFormat"`
+       StartTimestamp=$(($StartTimestamp+60))
+   done
+if [[ -n "$apache2Error" ]];then echo -e "$apache2Error";else echo -e "no error\n";fi
+}
+
+ShowApache2 $1 $2

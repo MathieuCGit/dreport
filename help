@@ -1,0 +1,39 @@
+#!/bin/bash
+#Help file you obtain when you enter dreport -h in a command line
+#Written By Mathieu CONAN
+
+UsageError="\t$MAIN_SCRIPT_NAME [-h] [-a] [-smHd] [-c --[settings]] \n"
+
+	echo -e "USAGE : \n"
+	echo -e  $UsageError
+	echo -e "PARAM: \n"
+	echo -e "\t_____________________________________________________________\n"
+	echo -e "\t\t-h\t$HELP_MSG_HELP\n"
+	echo -e "\t_____________________________________________________________\n"
+	echo -e "\t\t-a\t$HELP_MSG_PARAM_SHOW_ENABLED_PLUGINS\n"
+	echo -e "\t_____________________________________________________________\n"
+	echo -e "\t\t-s\t$HELP_MSG_PARAM_SECONDES\n"
+	echo -e "\t\t-m\t$HELP_MSG_PARAM_MINUTES\n"
+	echo -e "\t\t-H\t$HELP_MSG_PARAM_HOURS\n"
+	echo -e "\t\t-d\t$HELP_MSG_PARAM_DAYS\n"
+	echo -e "\t_____________________________________________________________\n"
+	echo -e "\t\t-c --settings\t\t$HELP_MSG_CONFIG\n"
+
+echo -e "\t\t\t--apache2 \t$HELP_MSG_PARAM_apache2"
+echo -e "\t\t\t--aptGet \t$HELP_MSG_PARAM_aptGet"
+echo -e "\t\t\t--diskUsage \t$HELP_MSG_PARAM_diskUsage"
+echo -e "\t\t\t--ifconfig \t$HELP_MSG_PARAM_ifconfig"
+echo -e "\t\t\t--iptables \t$HELP_MSG_PARAM_iptables"
+echo -e "\t\t\t--lsmod \t$HELP_MSG_PARAM_lsmod"
+echo -e "\t\t\t--memUsage \t$HELP_MSG_PARAM_memUsage"
+echo -e "\t\t\t--mircodc2 \t$HELP_MSG_PARAM_mircodc2"
+echo -e "\t\t\t--netstat \t$HELP_MSG_PARAM_netstat"
+echo -e "\t\t\t--psinfo \t$HELP_MSG_PARAM_psinfo"
+echo -e "\t\t\t--pstree \t$HELP_MSG_PARAM_pstree"
+echo -e "\t\t\t--resolv \t$HELP_MSG_PARAM_resolv"
+echo -e "\t\t\t--route \t$HELP_MSG_PARAM_route"
+echo -e "\t\t\t--SendByMail \t$HELP_MSG_PARAM_SendByMail"
+echo -e "\t\t\t--settings \t$HELP_MSG_PARAM_settings"
+echo -e "\t\t\t--ssh \t\t$HELP_MSG_PARAM_ssh"
+echo -e "\t\t\t--uptime \t$HELP_MSG_PARAM_uptime"
+echo -e "\t\t\t--who \t\t$HELP_MSG_PARAM_who"

@@ -1,0 +1,31 @@
+#!/bin/bash
+#Show process list as a tree (from parents to children) the process PID is notified between brackets
+#Written By Mathieu CONAN
+
+PstreeConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_PSTREE"
+read Pstree
+	case "$Pstree" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/pstree" "$PLUGINS_PATH_ENABLED/pstree"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*pstree*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowPstree(){
+echo -e "\n____/ $MAIN_MSG_PSTREE \________________________________________\n"
+echo -e "`pstree -p`\n"
+}
+
+
+
+if [[ "$1" = "-c" && "$2" = "--pstree" ]];then 
+PstreeConfig
+else
+ShowPstree
+fi

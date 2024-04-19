@@ -1,0 +1,31 @@
+#!/bin/bash
+#Show process list
+#Written By Mathieu CONAN
+
+PsInfoConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_PSINFO"
+read PsInfo
+	case "$PsInfo" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/psinfo" "$PLUGINS_PATH_ENABLED/psinfo"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*psinfo*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowPsInfo(){
+echo -e "____/ $MAIN_MSG_PSINFO \________________________________________\n"
+echo -e "`ps -ef`\n"
+}
+
+
+
+if [[ "$1" = "-c" && "$2" = "--psinfo" ]];then 
+PsInfoConfig
+else
+ShowPsInfo
+fi

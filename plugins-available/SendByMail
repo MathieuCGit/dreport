@@ -1,0 +1,29 @@
+#!/bin/bash
+#Allow you to send the report by mail. Mail address can be configure in conf.main.
+#Written by Mathieu CONAN
+
+MailConfig(){
+CurrentBackupSendReport=`grep "source plugins-available/SendByMail" $MAIN_SCRIPT_NAME`
+echo $CurrentBackupSendReport
+while true
+do
+echo "$SET_MSG_MAIL"
+read SendByMail
+	case "$SendByMail" in
+		$SET_INPUT_YES ) `sed -i s%"$CurrentBackupSendReport"%"source plugins-available/SendByMail"% $MAIN_SCRIPT_NAME`;break;;
+		$SET_INPUT_NO ) `sed -i s%"$CurrentBackupSendReport"%"#source plugins-available/SendByMail"% $MAIN_SCRIPT_NAME`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+SendReportByMail(){
+mailx -a "$OPT_MAIL_HEADER" -s "$OPT_MAIL_SUBJECT" -c $OPT_MAIL_ADDRESSCC -b $OPT_MAIL_ADDRESSBCC $OPT_MAIL_ADDRESSA < $REPORTS_PATH/$report_name
+}
+
+if [[ "$1" = "-c" && "$2" = "--SendByMail" ]];then 
+MailConfig
+else
+SendReportByMail
+fi

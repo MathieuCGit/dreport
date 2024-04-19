@@ -1,0 +1,31 @@
+#!/bin/bash
+#Show the nameserver entries in /etc/resolv.conf
+#Written By Mathieu CONAN
+
+ResolvConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_RESOLV"
+read Resolv
+	case "$Resolv" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/resolv" "$PLUGINS_PATH_ENABLED/resolv"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*resolv*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowResolv(){
+echo -e "____/ $MAIN_MSG_RESOLV \________________________________________\n"
+echo -e "`cat /etc/resolv.conf | grep "nameserver"`\n"
+}
+
+
+
+if [[ "$1" = "-c" && "$2" = "--resolv" ]];then 
+ResolvConfig
+else
+ShowResolv
+fi

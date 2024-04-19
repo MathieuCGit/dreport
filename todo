@@ -1,0 +1,22 @@
+-> Diversifier les formes du rapport (pdf, html...)
+
+-> Améliorer la gestion des erreurs dans les plugins.
+
+-> Pouvoir lancer l'analyse de seulement 1 plugins 
+   exemple : dreport -S --ssh pour lancer seulement l'analyse de ssh.(S = single) 
+
+-> Pouvoir activer tous les plugins en meme temps (ln -s dans une boucle) ou 
+   les désactiver tous en meme tps (rm plugins-enable/*)
+
+-> Démarrer le script en minimisant l'impact CPU/RAM.
+
+	______________________________________________________
+	| !!-> Gérer le temps local et le temps universel.!!  |
+	──────────────────────────────────────────────────────
+
+-> Langue detecté auto, mais donner la possibilité de la changer.
+
+-> Fonction pour choisir le type d'affichage de la date (jj/mm/yyyy où day/month/year (tout en lettre), etc...) ????
+
+-> Permettre d'installer et de lancer la commande sans le ./ devant et sans etre dans le dossier du script. 
+   ln -s vers /usr/sbin et /sbin ?? Mettre dans le script d'install ??

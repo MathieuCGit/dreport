@@ -1,0 +1,30 @@
+#!/bin/bash
+#Show kernel module loaded
+#Written by Mathieu CONAN
+
+LsmodConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_LSMOD"
+read lsmod
+	case "$lsmod" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/lsmod" "$PLUGINS_PATH_ENABLED/lsmod"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*lsmod*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowLsmod(){
+echo -e "____/ $MAIN_MSG_LSMOD \________________________________________\n"
+echo -e "`lsmod`\n"
+}
+
+
+if [[ "$1" = "-c" && "$2" = "--lsmod" ]];then 
+LsmodConfig
+else
+ShowLsmod
+fi

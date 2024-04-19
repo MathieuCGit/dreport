@@ -1,0 +1,4 @@
+#!/bin/bash
+case $2 in
+	*)echo "Option inconnu, essayez dreport -h";exit;;
+esac

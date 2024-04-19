@@ -1,0 +1,13 @@
+#!/bin/bash
+#Show Microdc2 direct connect client main chat log
+#Written By Mathieu CONAN
+
+ShowMicrodcReport(){
+echo -e "____/ $MAIN_MSG_MICRODC \________________________________________\n"
+
+	MicrodcToday=`date +"%d.%m.%Y"`
+	MicrodcError=`cat /home/francoshare/.microdc2/log | grep "$MicrodcToday" | grep Public:`
+	if [ -n "$MicrodcError" ];then echo "$MicrodcError"; else echo "$MAIN_MSG_MICRODC_ERROR"; fi
+}
+
+ShowMicrodcReport

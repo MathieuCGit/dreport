@@ -1,0 +1,31 @@
+#!/bin/bash
+#Show Ram and Swap usage
+#Written By Mathieu CONAN
+
+
+MemUsageConfig(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_RAM_USAGE"
+read MemUsage
+	case "$MemUsage" in
+		$SET_INPUT_YES ) `ln -fs "$absolute_path_to_plugins/memUsage" "$PLUGINS_PATH_ENABLED/memUsage"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*memUsage*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowMemUsage(){
+echo -e "____/ $MAIN_MSG_RAM_USAGE \________________________________________\n"
+echo -e "`free -mtl`\n"
+}
+
+
+if [[ "$1" = "-c" && "$2" = "--memUsage" ]];then 
+MemUsageConfig
+else
+ShowMemUsage
+fi

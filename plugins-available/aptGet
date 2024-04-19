@@ -1,0 +1,53 @@
+#!/bin/bash
+#Auto-management for some apt-get tasks. MODULE MUST BE REWRITE, PLEASE, NOT USE FOR THE MOMENT
+#Written by Mathieu CONAN
+
+
+echo -e "_/ $MAIN_MSG_PKG_MANAGER \________________________________________\n"
+
+PackageManagerUpdate(){
+echo -e "\t $MAIN_MSG_PKG_MANAGER_UPDATE\n"
+
+	AlreadyExistPkgList=`ls | grep "PkgList"`
+	if [ -n "$AlreadyExistPkgList" ];then echo -e "$MAIN_MSG_PKG_MANAGER_LIST_ALREADY_EXIST : "$AlreadyExistPkgList""
+	else 
+		dpkgToday=`date +%d-%m-%Y`
+		dpkg --get-selections "*" > $dpkgToday"-PkgList"
+		echo -e "$MAIN_MSG_PKG_MANAGER_INITIALISE_LIST : "$dpkgToday"-PkgList"
+	fi
+echo -e "\n\t $MAIN_MSG_PKG_MANAGER_UPDATE_LIST\n"
+aptitude update
+}
+
+PackageManagerUpgrade(){
+echo -e "\n\t $MAIN_MSG_PKG_MANAGER_UPGRADE"
+echo -e "\t $LAYOUT_ASTERICS_SEPARATOR\n"
+	if [ "$(apt-get -s upgrade | grep "$SYSTEM_APT_UPDATE_MARK" | cut -c1)" > "0" ];then
+		dpkgToday=`date +%d-%m-%Y`
+		rm -f *PkgList
+		dpkg --get-selections "*" > $dpkgToday"-PkgList"
+		echo -e "$MAIN_MSG_PKG_MANAGER_LIST_RECREATED : "$dpkgToday"-PkgList "
+	else
+		echo -e "$MAIN_MSG_PKG_MANAGER_NO_UPDATE"
+	fi
+echo -e "\n\t $MAIN_MSG_PKG_MANAGER_UPGRADE_RUN"
+echo -e "\t $LAYOUT_ASTERICS_SEPARATOR\n"
+#apt-get -y upgrade --force-yes
+echo -e "\t FONCTIONALITE DESACTIVEE POUR LE MOMENT !\n\n"
+}
+
+PackageManagerInstalledToday(){
+echo -e "\n\t $MAIN_MSG_PKG_MANAGER_INSTALLED_TODAY"
+echo -e "\t $LAYOUT_ASTERICS_SEPARATOR\n"
+	aptGetToday=`date +%F`
+	aptGetInstalled=`cat /var/log/dpkg.log | grep "status installed" | grep -i "$aptGetToday"`
+	if [ -n "$aptGetInstalled" ];then echo -e "$aptGetInstalled"; else echo -e "$MAIN_MSG_PKG_MANAGER_NO_INSTALL"; fi
+}
+
+PackageManagerRemovedToday(){
+echo -e "\n\t $MAIN_MSG_PKG_MANAGER_REMOVED_TODAY"
+echo -e "\t $LAYOUT_ASTERICS_SEPARATOR\n"
+	aptGetRemoved=`cat /var/log/dpkg.log | grep "remove" | grep -i "$aptGetToday"`
+	if [ -n "$aptGetRemoved" ];then echo -e "$aptGetRemoved"; else echo -e "$MAIN_MSG_PKG_MANAGER_NO_REMOVE"; fi
+echo ""
+}

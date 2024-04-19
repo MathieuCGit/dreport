@@ -1,0 +1,39 @@
+#!/bin/bash
+#show you the /var/log/apache2/error.log messages from apache2 web server activity.
+#Written By Mathieu CONAN
+
+Apache2Config(){
+absolute_path_to_plugins=`pwd`"/plugins-available"
+while true
+do
+echo "$SET_MSG_APACHE2"
+read Apache2
+	case "$Apache2" in
+		$SET_INPUT_YES ) `ln -s "$absolute_path_to_plugins/apache2" "$PLUGINS_PATH_ENABLED/apache2"`;break;;
+		$SET_INPUT_NO ) `rm -f $PLUGINS_PATH_ENABLED/*apache2*`;break;;
+		* )echo "$SET_MSG_ERROR";continue;;
+	esac
+done
+exit
+}
+
+ShowApache2(){
+echo -e "____/ $MAIN_MSG_APACHE2 \________________________________________\n"
+    FunctionDateConvert #parametre le variable $Month
+    FunctionTimeFormat $1 $2 #parametre la variable $StartTimestamp et $Now
+
+    while [[  $StartTimestamp -le $Now ]]
+    do
+       TimeFormat=`date --date "1970-01-01 $($StartTimestamp)sec" +"$Month %d %H:%M"`
+       apache2Error=`cat /var/log/apache2/error.log | grep "$TimeFormat"`
+       StartTimestamp=$(($StartTimestamp+60))
+   done
+if [[ -n "$apache2Error" ]];then echo -e "$apache2Error";else echo -e "$MAIN_MSG_APACHE2_FALSE\n";fi
+}
+
+
+case "$1" in 
+	-c) if [[ "$2" -eq "--apache2" ]];then Apache2Config;fi ;;
+	--apache2) ShowApache2 $1 $2 ;;
+	*) ShowApache2 $1 $2 ;;
+esac

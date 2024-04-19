@@ -1,0 +1,52 @@
+#!/bin/bash
+#Main functions of the program. You can add functions if you need. Please, as specified in the LICENCE file, 
+#report me all your changes at : mathieuconan(at)gmail(dot)com
+#Written by Mathieu CONAN
+
+#because of locale installed on different system, date doesn't always the same string.This function fixes that :)
+FunctionDateConvert() {
+	Month=`date +%m`
+	case $Month in
+		"01") Month="Jan";;
+		"02") Month="Feb";;
+		"03") Month="Mar";;
+		"04") Month="Apr";;
+		"05") Month="May";;
+		"06") Month="Jun";;
+		"07") Month="Jul";;
+		"08") Month="Aug";;
+		"09") Month="Sep";;
+		"10") Month="Oct";;
+		"11") Month="Nov";;
+		"12") Month="Dec";;
+		*)  echo -e "\tDate Convert function error. Please report this bug.\n"; exit 0;;
+	esac
+}
+
+FunctionTimeFormat() {
+#Cette fonction gere le format entré si vous avez entrez uen recherche en heure, en minutes, en secondes...
+
+#date actuelle + 1h pour etre dans le bon creneau on travail en seconde ici
+Now=$((`date +"%s"` + 3600))
+case $1 in
+	-s)
+		#Calcul la date entreé dans $1 en seconde et renvoi un timestamp
+		StartTimestamp=`date --date "$2 sec ago" +"%s"`
+	;;
+	-m)
+		#Calcul la date entreé dans $1 en minutes et renvoi un timestamp
+		StartTimestamp=`date --date "$2 min ago" +"%s"`
+	;;
+	-H)
+		#Calcul la date entreé dans $1 en heure et renvoi un timestamp
+		StartTimestamp=`date --date "$2 hours ago" +"%s"`
+	;;
+	-d)
+		#Calcul la date entreé dans $1 en jours et renvoi un timestamp
+		StartTimestamp=`date --date "$2 days ago" +"%s"`
+	;;
+	*)
+		echo -e "\tTime format function error. Please report this bug.\n"; exit 0;
+	;;
+esac
+}
